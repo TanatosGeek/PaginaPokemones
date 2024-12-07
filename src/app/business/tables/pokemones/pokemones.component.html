@@ -1,0 +1,30 @@
+<div class="pokedex-container">
+  <div class="pokedex-header">
+    <h1>Pokédex</h1>
+  </div>
+
+  <div class="pokedex-table">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of paginatedData">
+          <td>{{ item.id }}</td>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.tipo }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pokedex-pagination">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+  </div>
+</div>
