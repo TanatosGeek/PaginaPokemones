@@ -1,65 +1,63 @@
 <div
-	class="bg-gradient-to-b from-blue-600 via-red-500 to-yellow-400 absolute top-0 left-0 bottom-0 h-full w-full overflow-hidden">
-	<img
-		src="https://www.gamerfocus.co/wp-content/uploads/2019/06/pokemon_collage.jpg"
-		alt="Pokemon Background"
-		class="absolute top-0 left-0 w-full h-full object-cover opacity-40" />
+  class="bg-gradient-to-b from-blue-600 via-red-500 to-yellow-400 absolute top-0 left-0 bottom-0 h-full w-full overflow-hidden">
+  <img
+    src="https://www.gamerfocus.co/wp-content/uploads/2019/06/pokemon_collage.jpg"
+    alt="Pokemon Background"
+    class="absolute top-0 left-0 w-full h-full object-cover opacity-40" />
 </div>
-
+<form (ngSubmit)="register()">
 <div
-	class="relative min-h-screen flex justify-center items-center rounded-3xl shadow-xl z-10 bg-transparent">
-	<div class="flex-col flex self-center lg:px-14 sm:max-w-4xl xl:max-w-md text-white">
-		<div class="self-start flex flex-col">
-			<img src="https://static.vecteezy.com/system/resources/previews/000/141/925/original/set-of-pokemon-icons-vector.jpg" alt="Pokemon Icons" class="h-32 mx-auto">
-			<h1 class="my-3 font-semibold text-4xl text-center">Bienvenido, Entrenador</h1>
-			<p class="text-center text-sm opacity-90">Explora el mundo Pokémon con tu cuenta.</p>
-		</div>
-	</div>
-	<div class="flex justify-center self-center">
-		<div class="p-12 bg-white bg-opacity-90 mx-auto rounded-3xl w-96">
-			<div class="mb-7 text-center">
-				<h3 class="font-bold text-2xl text-gray-800">Inicia Sesión</h3>
-			</div>
-			<div *ngIf="errorMessage" class="text-red-500 text-center mb-3">
-				{{ errorMessage }}
-			</div>
-			<div class="space-y-6">
-				<div>
-					<input
-						class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-						type="email"
-						placeholder="Correo"
-						[(ngModel)]="email"/>
-				</div>
-				<div class="relative">
-					<input
-						type="password"
-						placeholder="Contraseña" [(ngModel)]="password"
-						class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-					/>
-				</div>
-				<div>
-					<button
-						type="submit" 
-						class="w-full flex justify-center bg-gradient-to-r from-blue-500 to-red-500 text-white p-3 rounded-lg tracking-wide font-semibold shadow-lg transform hover:scale-105 transition duration-300">
-						<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" class="h-6 mr-2" alt="Pikachu Icon">
-						¡Atrápalos Ya!
-					</button>
-				</div>
-				<div class="flex items-center justify-center space-x-2 my-5">
-					<span class="h-px w-16 bg-gray-400"></span>
-					<span class="text-gray-600">o</span>
-					<span class="h-px w-16 bg-gray-400"></span>
-				</div>
-				<div>
-					<button
-						type="button"
-						class="w-full flex justify-center bg-gradient-to-r from-blue-500 to-red-500 text-white p-3 rounded-lg tracking-wide font-semibold shadow-lg transform hover:scale-105 transition duration-300">
-						<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" class="h-6 mr-2" alt="Pikachu Icon">
-						¡Inicia una Nueva Aventura!
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+  class="relative min-h-screen flex justify-center items-center rounded-3xl shadow-xl z-10 bg-transparent">
+  <div class="p-12 bg-white bg-opacity-90 mx-auto rounded-3xl w-[700px] flex space-x-12">
+    <!-- Contenedor izquierdo con los inputs -->
+    <div class="flex-1 space-y-6">
+      <div class="mb-7 text-center">
+        <h3 class="font-bold text-2xl text-gray-800">Regístrate</h3>
+      </div>
+      <div *ngIf="errorMessage" class="text-red-500 text-center mb-3">
+        {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="text-green-500 text-center mb-3">
+        {{ successMessage }}
+      </div>
+      <form >
+        <div class="space-y-6">
+          <input type="text" placeholder="Nombre" [(ngModel)]="user.name" name="name" required
+            class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" placeholder="Apellido Paterno" [(ngModel)]="user.apellidoP" name="apellidoP" required
+            class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" placeholder="Apellido Materno" [(ngModel)]="user.apellidoM" name="apellidoM" required
+            class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="email" placeholder="Correo" [(ngModel)]="user.email" name="email" required
+            class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="password" placeholder="Contraseña" [(ngModel)]="user.password" name="password" required
+            class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+          <input type="tel" placeholder="Teléfono" [(ngModel)]="user.phone" name="phone" required
+            class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+        </div>
+      </form>
+    </div>
+
+    <!-- Contenedor derecho con el avatar y el botón -->
+    <div class="flex-1 flex flex-col justify-center items-center space-y-6">
+      <!-- Campo para el avatar -->
+      <input type="text" placeholder="Avatar (URL)" [(ngModel)]="user.avatar" name="avatar" required
+        class="w-full text-sm px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
+        
+      <!-- Previsualización del avatar -->
+      <div *ngIf="user.avatar" class="text-center mt-4">
+        <p class="text-sm text-gray-500">Vista previa del avatar:</p>
+        <img [src]="user.avatar" alt="Avatar"
+          class="w-24 h-24 rounded-full object-cover mx-auto border border-gray-300" />
+      </div>
+
+      <!-- Botón de registro -->
+      <button type="submit" 
+        class="w-full flex justify-center bg-gradient-to-r from-blue-500 to-red-500 text-white p-3 rounded-lg tracking-wide font-semibold shadow-lg transform hover:scale-105 transition duration-300">
+        Registrarse
+      </button>
+    </div>
+  </div>
 </div>
+</form>
+

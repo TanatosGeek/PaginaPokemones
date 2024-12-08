@@ -55,5 +55,11 @@ export class GeneralService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+  // Registrar usuario
+registerUser(userData: any): Observable<any> {
+  return this.http.post<any>(this.apiUrl, userData).pipe();
+}
+
 }
 
