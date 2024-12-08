@@ -24,6 +24,10 @@ export default class LoginComponent {
     return emailRegex.test(email);
   }
 
+  registro(){
+    this.router.navigate(['/register']);
+  }
+
   // Método para manejar el inicio de sesión
   iniciarPagina() {
     if (!this.email || !this.password) {
