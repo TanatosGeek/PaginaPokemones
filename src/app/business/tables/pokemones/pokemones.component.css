@@ -1,86 +1,93 @@
 /* Contenedor general de la Pokédex */
 .pokedex-container {
-    background: #f83245; /* Color rojo Pokédex */
-    border: 5px solid #000;
-    border-radius: 10px;
-    padding: 20px;
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Encabezado de la Pokédex */
-  .pokedex-header {
-    background: #000;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-  }
-  
-  .pokedex-header h1 {
-    margin: 0;
-    font-size: 24px;
-    color: white;
-    text-transform: uppercase;
-  }
-  
-  /* Tabla de Pokémon */
-  .pokedex-table table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    color: black;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  .pokedex-table th, .pokedex-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-  }
-  
-  .pokedex-table th {
-    background: #444;
-    color: white;
-    text-transform: uppercase;
-  }
-  
-  .pokedex-table tr:nth-child(even) {
-    background: #f9f9f9;
-  }
-  
-  .pokedex-table tr:hover {
-    background: #ffcccb;
-    cursor: pointer;
-  }
-  
-  /* Paginación */
-  .pokedex-pagination {
-    margin-top: 20px;
-  }
-  
-  .pokedex-pagination button {
-    background: #000;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin: 0 5px;
-  }
-  
-  .pokedex-pagination button:hover {
-    background: #333;
-  }
-  
-  .pokedex-pagination button:disabled {
-    background: #888;
-    cursor: not-allowed;
-  }
-  
+  background: #f83245;
+  /* Color rojo Pokédex */
+  border: 5px solid #000;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Encabezado de la Pokédex */
+.pokedex-header {
+  background: #000;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.pokedex-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Tabla de Pokémon */
+.pokedex-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.pokedex-table th,
+.pokedex-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.pokedex-table th {
+  background: #444;
+  color: white;
+  text-transform: uppercase;
+}
+
+.pokedex-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.pokedex-table tr:hover {
+  background: #ffcccb;
+  cursor: pointer;
+}
+
+/* Paginación */
+.pokedex-pagination {
+  margin-top: 20px;
+}
+
+.pokedex-pagination button {
+  background: #000;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 0 5px;
+}
+
+.pokedex-pagination button:hover {
+  background: #333;
+}
+
+.pokedex-pagination button:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+
+.accion{
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}

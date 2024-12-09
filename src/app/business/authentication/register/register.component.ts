@@ -30,7 +30,8 @@ export default class RegisterComponent {
   register() {
     const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,}$/;
     const phoneRegex = /^\d{10}$/;
-    const urlRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))$/;
+    // const urlRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))$/;
+    const urlRegex = /.*/;
 
     // Validaciones básicas
     if (
