@@ -1,0 +1,26 @@
+.statsLista {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0px;
+}
+
+.statElemento {
+  text-align: left;
+  margin: 0px;
+  
+}
+
+.modal-container {
+  max-height: 500px;
+  overflow-y: auto; /* Permite el desplazamiento si el contenido excede la altura */
+}
+
+.avatar{
+  height: 200px;
+  width: 200px;
+}
+
+p{
+  font-weight: bold;
+  
+}

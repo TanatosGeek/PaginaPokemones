@@ -9,17 +9,8 @@ export class PokemonService {
 
   private apiUrl = 'http://127.0.0.1:8000/api/pokemons'; 
 
-  private currentUserSubject: BehaviorSubject<any>;
-  currentUser$: Observable<any>;
 
   constructor(private http: HttpClient) {
-    const isBrowser = typeof window !== 'undefined';
-    const savedUser = isBrowser ? localStorage.getItem('currentUser') : null;
-
-    this.currentUserSubject = new BehaviorSubject<any>(
-      savedUser ? JSON.parse(savedUser) : null
-    );
-    this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
   getPokemons(): Observable<any[]> {
@@ -28,25 +19,18 @@ export class PokemonService {
     );
   }
 
-  // Establecer el usuario actual y guardarlo en localStorage
-  setCurrentUser(user: any) {
-    this.currentUserSubject.next(user);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    }
+  buscarPokemon(nombre: any): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl+'/buscar/'+nombre).pipe(
+      map(response => response.pokemons)
+    );
   }
 
-  // Limpiar el usuario actual
-  clearCurrentUser() {
-    this.currentUserSubject.next(null);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('currentUser');
-    }
+  eliminarPokemon(id: any){
+    return this.http.delete<any>(this.apiUrl+'/'+id);
   }
 
-  // Obtener el usuario actual
-  getCurrentUser() {
-    return this.currentUserSubject.value;
+  editarPokemon(pokemon:any){
+    return this.http.put<any>(this.apiUrl+'/'+pokemon.id,pokemon);
   }
 }
 

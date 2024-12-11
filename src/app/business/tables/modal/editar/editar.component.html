@@ -1,0 +1,89 @@
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[700px] w-full relative border-4 border-black">
+    <!-- Top section: Pokédex screen frame -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-white">
+      <h2 class="text-2xl font-bold text-center">Editar Pokémon</h2>
+    </div>
+
+    <!-- Main section: Form content -->
+    <div class="bg-gray-100 p-4 rounded-b-lg">
+      <form (ngSubmit)="editarPokemon()">
+        <div class="max-h-[500px] overflow-y-auto px-4">
+          <!-- Avatar -->
+          <div class="mb-6">
+            <label for="avatar" class="block text-gray-700 font-bold">Avatar URL</label>
+            <input id="avatar" type="text" [(ngModel)]="pokemon.avatar" name="avatar"
+              class="w-full p-2 border rounded" />
+            <div class="flex items-center justify-center mt-2">
+              <img class="w-[120px] h-[120px] border-4 border-black rounded-full shadow" [src]="pokemon.avatar" alt="Avatar Preview" />
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <div class="mb-4">
+            <label for="nombre" class="block text-gray-700 font-bold">Nombre</label>
+            <input id="nombre" type="text" [(ngModel)]="pokemon.nombre" name="nombre"
+              class="w-full p-2 border rounded" />
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-4">
+            <label for="descripcion" class="block text-gray-700 font-bold">Descripción</label>
+            <textarea id="descripcion" [(ngModel)]="pokemon.descripcion" name="descripcion"
+              class="w-full p-2 border rounded"></textarea>
+          </div>
+
+          <!-- Peso y Altura -->
+          <div class="flex space-x-4 mb-4">
+            <div>
+              <label for="peso" class="block text-gray-700 font-bold">Peso</label>
+              <input id="peso" type="number" [(ngModel)]="pokemon.peso" name="peso"
+                class="w-full p-2 border rounded" />
+            </div>
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Altura</label>
+              <input id="altura" type="number" [(ngModel)]="pokemon.altura" name="altura"
+                class="w-full p-2 border rounded" />
+            </div>
+          </div>
+
+          <!-- Estadísticas -->
+          <p class="text-gray-700 mb-2 font-bold">Estadísticas</p>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div *ngFor="let stat of ['hp', 'ataque', 'defensa', 'ataque_especial', 'defensa_especial', 'velocidad']">
+              <label [for]="stat" class="block text-gray-700 font-bold capitalize">{{ stat }}</label>
+              <input [id]="stat" type="number" [(ngModel)]="pokemon[stat]" [name]="stat"
+                class="w-full p-2 border rounded" />
+            </div>
+          </div>
+
+          <!-- Habilidades -->
+          <p class="text-gray-700 mb-2 font-bold">Habilidades</p>
+          <div *ngFor="let habilidad of pokemon.habilidades; let i = index" class="mb-4">
+            <label class="block text-gray-700 font-bold">Habilidad {{ i + 1 }}</label>
+            <input type="text" [(ngModel)]="pokemon.habilidades[i].nombre" [name]="'habilidad_' + i + '_nombre'"
+              placeholder="Nombre de la habilidad" class="w-full p-2 border rounded mb-2" />
+            <textarea [(ngModel)]="pokemon.habilidades[i].descripcion" [name]="'habilidad_' + i + '_descripcion'"
+              placeholder="Descripción" class="w-full p-2 border rounded"></textarea>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4">
+          <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Pokédex Buttons -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>

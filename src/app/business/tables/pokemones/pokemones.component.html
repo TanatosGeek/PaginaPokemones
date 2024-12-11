@@ -1,6 +1,15 @@
 <div class="pokedex-container">
+  
+
   <div class="pokedex-header">
     <h1>Pokédex</h1>
+  </div>
+
+  <div class="pokedex-buscar">
+    
+    <input type="text" [(ngModel)]="buscar" class="" placeholder="Ingrese el nombre a buscar" style="border-radius: 5px; color: black; padding: 5px; width: 50%;">
+    <button (click)="buscarPokemon()" style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;">Buscar</button>
+    <button (click)="buscarPokemon()" style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;">Agregar</button>
   </div>
 
   <div class="pokedex-table">
@@ -17,15 +26,24 @@
         <tr *ngFor="let pokemon of paginatedData">
           <td>{{ pokemon.id }}</td>
           <td>{{ pokemon.nombre }}</td>
-          <td>{{ pokemon.avatar }}</td>
           <td>
-            <button class="accion" (click)="openInformacion(pokemon)">
+            <div class="centrado">
+              <img class="avatar  mx-auto" src="{{pokemon.avatar}}" alt="">
+            </div>
+            
+          </td>
+          <td>
+            <button class="accion" (click)="openModalInformacion(pokemon)">
               <img src="iconos/busqueda.png" alt="">
             </button>
-            <button class="accion" (click)="openInformacion(pokemon)">
+
+
+            <button class="accion" (click)="openModalEditar(pokemon)">
               <img src="iconos/lapiz.png" alt="">
             </button>
-            <button class="accion" (click)="openInformacion(pokemon)">
+
+
+            <button class="accion" (click)="openModalEliminar(pokemon)">
               <img src="iconos/borrar.png" alt="">
             </button>
           </td>
@@ -34,7 +52,17 @@
     </table>
   </div>
 
-  <div class="pokedex-pagination">
+  <app-informacion [data]="selectedPokemon" [isOpen]="isInformacionOpen" (close)="closeModalInformacion()"></app-informacion>
+  <app-eliminar [data]="selectedPokemon" [isOpen]="isEliminarOpen" (close)="closeModalEliminar()" (confirmar)="eliminarPokemon($event)"></app-eliminar>
+  <app-editar [data]="selectedPokemon" [isOpen]="isEditarOpen" (close)="closeModalEditar()" (confirmar)="editarPokemon($event)"></app-editar>
+
+  <div class="pokedex-pagination" (change)="numeroPokemons($event)">
+    <select id="paginas" name="paginas">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
     <button (click)="previousPage()" [disabled]="currentPage === 1">Anterior</button>
     <span>Página {{ currentPage }} de {{ totalPages }}</span>
     <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>

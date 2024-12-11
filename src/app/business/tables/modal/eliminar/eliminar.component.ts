@@ -1,20 +1,26 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-
 @Component({
-  selector: 'app-informacion',
+  selector: 'app-eliminar',
   standalone: true,
-  imports: [NgIf, NgFor],
-  templateUrl: './informacion.component.html',
-  styleUrl: './informacion.component.css'
+  imports: [NgIf],
+  templateUrl: './eliminar.component.html',
+  styleUrl: './eliminar.component.css'
 })
-export class InformacionComponent {
+export class EliminarComponent {
+
   @Input() data: any = {};
   @Input() isOpen = false; 
   @Output() close = new EventEmitter<void>(); 
+  @Output() confirmar = new EventEmitter<any>();
 
   closeModal() {
     this.close.emit(); 
+  }
+
+  borrarPokemon() {
+    this.confirmar.emit(this.data); 
+    this.closeModal(); 
   }
 }

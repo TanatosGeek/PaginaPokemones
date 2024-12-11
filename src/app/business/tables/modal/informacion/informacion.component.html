@@ -1,1 +1,81 @@
-<p>informacion works!</p>
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[600px] relative border-4 border-black">
+    <!-- Top screen (Pokédex-style frame) -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4">
+      <h2 class="text-white text-2xl font-bold text-center mb-2">{{data.nombre}}</h2>
+      <div class="flex items-center justify-center mb-4">
+        <img class="w-[150px] h-[150px] rounded-full border-4 border-black shadow-md" src="{{data.avatar}}"
+          alt="{{data.nombre}}" />
+      </div>
+    </div>
+    <!-- Main screen content -->
+
+
+    <div class="bg-gray-100 rounded-b-lg p-4">
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Detalles</h3>
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="text-gray-700 text-sm text-center mb-2">{{data.descripcion}}</p>
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Peso</p>
+          <p class="text-gray-700">{{data.peso}} kg</p>
+        </div>
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Altura</p>
+          <p class="text-gray-700">{{data.altura}} m</p>
+        </div>
+      </div>
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Estadísticas</h3>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">HP</p>
+            <p class="text-gray-700">{{data.hp}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Ataque</p>
+            <p class="text-gray-700">{{data.ataque}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Defensa</p>
+            <p class="text-gray-700">{{data.defensa}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Ataque Esp.</p>
+            <p class="text-gray-700">{{data.ataque_especial}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Defensa Esp.</p>
+            <p class="text-gray-700">{{data.defensa_especial}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Velocidad</p>
+            <p class="text-gray-700">{{data.velocidad}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Habilidades</h3>
+        <div *ngFor="let habilidad of data.habilidades" class="bg-gray-200 p-2 rounded mb-2">
+          <p class="font-bold text-gray-700">{{habilidad.nombre}}</p>
+          <p class="text-sm text-gray-700">{{habilidad.descripcion}}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Pokédex buttons -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+    <div class="absolute bottom-2 right-2">
+      <button class="px-4 py-2 bg-red-600 text-white rounded" (click)="closeModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

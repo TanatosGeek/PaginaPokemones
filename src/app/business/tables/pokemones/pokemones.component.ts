@@ -15,17 +15,23 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { InformacionComponent } from '../modal/informacion/informacion.component';
+import { EliminarComponent } from '../modal/eliminar/eliminar.component';
+import { EditarComponent } from '../modal/editar/editar.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pokemones',
   standalone: true,
   templateUrl: './pokemones.component.html',
   styleUrls: ['./pokemones.component.css'],
-  imports: [NgFor, MatIconModule, MatButtonModule, MatDividerModule]
+  imports: [FormsModule,EditarComponent,NgFor, MatIconModule, MatButtonModule, MatDividerModule, InformacionComponent, EliminarComponent]
 })
 export default class PokemonesComponent implements OnInit{
-  data: any[] = [];
-  readonly dialog = inject(MatDialog);
+  data: any[] = []; 
+  selectedPokemon: any = null; 
+  isInformacionOpen = false;
+  isEliminarOpen = false;
+  isEditarOpen = false;
 
   constructor(private pokemonservice: PokemonService){
   }
@@ -36,39 +42,87 @@ export default class PokemonesComponent implements OnInit{
       this.updatePaginatedData();
     })
   }
-  // data = [
-  //   { id: 1, nombre: 'Pikachu', tipo: 'Eléctrico' },
-  //   { id: 2, nombre: 'Charmander', tipo: 'Fuego' },
-  //   { id: 3, nombre: 'Bulbasaur', tipo: 'Planta' },
-  //   { id: 4, nombre: 'Squirtle', tipo: 'Agua' },
-  //   { id: 5, nombre: 'Jigglypuff', tipo: 'Normal' },
-  //   { id: 6, nombre: 'Meowth', tipo: 'Normal' },
-  //   { id: 7, nombre: 'Pidgey', tipo: 'Volador' },
-  //   { id: 8, nombre: 'Snorlax', tipo: 'Normal' },
-  //   { id: 9, nombre: 'Gengar', tipo: 'Fantasma' },
-  //   { id: 10, nombre: 'Eevee', tipo: 'Normal' },
-  // ];
+  
   pageSize = 5;
   currentPage = 1;
   paginatedData = this.data.slice(0, this.pageSize);
+  buscar = "";
 
   get totalPages(): number {
     return Math.ceil(this.data.length / this.pageSize);
   }
 
-  openInformacion(pokemon: any) {
-    console.log("hola");
-    const dialogRef = this.dialog.open(InformacionComponent, {
-      width: "400px",
-      data: pokemon,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
-
+  buscarPokemon(){
+    if(this.buscar != ""){
+      this.pokemonservice.buscarPokemon(this.buscar).subscribe(resultado => {
+        this.data = resultado;
+        this.updatePaginatedData();
+      }, (error) => {
+        console.error('Error al buscar el pokemon:', error);
+      })
+    }else{
+      this.ngOnInit();
+    }
+    
+  }
+  openModalInformacion(pokemon: any) {
+    this.selectedPokemon = pokemon;
+    console.log(pokemon);
+    this.isInformacionOpen = true;
   }
 
+  closeModalInformacion() {
+    this.selectedPokemon = null;
+    this.isInformacionOpen = false;
+  }
+
+  openModalEditar(pokemon: any) {
+    this.selectedPokemon = pokemon;
+    console.log(pokemon);
+    this.isEditarOpen = true;
+  }
+
+  closeModalEditar() {
+    this.selectedPokemon = null;
+    this.isEditarOpen = false;
+  }
+
+  openModalEliminar(pokemon: any) {
+    this.selectedPokemon = pokemon;
+    console.log(pokemon);
+    this.isEliminarOpen = true;
+  }
+
+  closeModalEliminar() {
+    this.selectedPokemon = null;
+    this.isEliminarOpen = false;
+  }
+
+  eliminarPokemon(pokemon: any) {
+    this.pokemonservice.eliminarPokemon(pokemon.id).subscribe(() => {
+      this.ngOnInit();
+      this.updatePaginatedData(); 
+      this.closeModalEliminar();
+    }, (error) => {
+      console.error('Error al eliminar el Pokémon:', error);
+    });
+  }
+
+  editarPokemon(pokemon: any) {
+    this.pokemonservice.editarPokemon(pokemon).subscribe(() => {
+      console.log('Pokémon ditado');
+      this.ngOnInit();
+    }, (error) => {
+      console.error('Error al editar el Pokémon:', error);
+    });
+  }
+
+
+  numeroPokemons(event: any): void {
+    this.pageSize = parseInt(event.target.value, 10);
+    this.currentPage = 1;
+    this.updatePaginatedData();
+  }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
@@ -89,6 +143,4 @@ export default class PokemonesComponent implements OnInit{
     const endIndex = startIndex + this.pageSize;
     this.paginatedData = this.data.slice(startIndex, endIndex);
   }
-
-
 }
