@@ -1,0 +1,83 @@
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[700px] w-full relative border-4 border-black">
+    <!-- Top section: Pokédex screen frame -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-white">
+      <h2 class="text-2xl font-bold text-center">Editar Pokémon</h2>
+    </div>
+
+    <!-- Main section: Form content -->
+    <div class="bg-gray-100 p-4 rounded-b-lg">
+      <form (ngSubmit)="register()">
+        <div class="max-h-[500px] overflow-y-auto px-4">
+          <!-- Avatar -->
+          <div class="mb-6">
+            <label for="avatar" class="block text-gray-700 font-bold">Avatar URL</label>
+            <input id="avatar" type="text" [(ngModel)]="user.avatar" name="avatar"
+              class="w-full p-2 border rounded text-black" />
+            <div class="flex items-center justify-center mt-2">
+              <img class="w-[120px] h-[120px] border-4 border-black rounded-full shadow" [src]="user.avatar" alt="Avatar Preview" />
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="text-red-500 text-center mb-3">
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="text-green-500 text-center mb-3">
+            {{ successMessage }}
+          </div>
+
+
+          <div class="grid grid-cols-2 gap-4 mb-4">
+
+
+          <!-- Nombre -->
+          <div class="mb-4">
+            <label for="nombre" class="block text-gray-700 font-bold">Nombre</label>
+            <input id="nombre" type="text" [(ngModel)]="user.name" name="nombre"
+              class="w-full p-2 border rounded text-black" />
+          </div>
+
+          <div class="mb-4">
+            <label for="descripcion" class="block text-gray-700 font-bold">Apellido Paterno</label>
+            <input id="descripcion" [(ngModel)]="user.apellidoP" name="apellidoM"
+              class="w-full p-2 border rounded text-black">
+          </div>
+
+            <div>
+              <label for="peso" class="block text-gray-700 font-bold">Apellido Materno</label>
+              <input id="peso" type="text" [(ngModel)]="user.apellidoM" name="apellidoP"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Telefono</label>
+              <input id="altura" type="text" [(ngModel)]="user.phone" name="phone"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Contraseña</label>
+              <input id="altura" type="text" [(ngModel)]="user.password" name="password"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+
+        </div> 
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4">
+          <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Pokédex Buttons -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>

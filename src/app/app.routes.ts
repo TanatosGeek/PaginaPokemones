@@ -25,6 +25,11 @@ export const routes: Routes = [
                 path: 'pokemones',
                 loadComponent: () =>
                     import('./business/tables/pokemones/pokemones.component').then(m => m.default)
+            },
+            {
+                path: 'usuarios',
+                loadComponent: () =>
+                    import('./business/tables/usuarios/usuarios.component').then(m => m.default)
             }
         ]
     },

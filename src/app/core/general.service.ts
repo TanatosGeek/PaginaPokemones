@@ -20,6 +20,21 @@ export class GeneralService {
     );
   }
   
+  getUsers2(): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => response.usuarios)
+    );
+  }
+
+  deleteUser(userId: any) {
+    return this.http.delete<any>(`${this.apiUrl}/${userId}`).pipe(
+      map(response => response.usuarios)
+    );
+  }
+
+  buscarUsuario(nombre: any): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl+'/buscar/'+nombre).pipe();
+  }
 
   // Guardar datos del usuario autenticado
   setCurrentUser(user: any): void {
