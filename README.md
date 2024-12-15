@@ -358,6 +358,155 @@ El siguiente metodo sirve se usa para que el usuario pueda elejir la cantidad de
 
 ```
 
+Los siguientes metodos controlan cuando se da clic en cambiar la pagina de tabla de los pokemones, con nextPage se pasa a la pagina siguiente y con previous page se para a la oagiuna anterior.
+
+```javascript
+nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedData();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedData();
+    }
+  }
+```
+
+El html de la tabla esta compuesto de la siguiente manera:
+
+
+```html
+<div class="pokedex-container">
+  <!-- Contenedor principal de la Pokédex -->
+
+  <div class="pokedex-header">
+    <!-- Encabezado de la Pokédex -->
+    <h1>Pokédex</h1>
+  </div>
+
+  <div class="pokedex-buscar">
+    <!-- Sección de búsqueda y botón para agregar Pokémon -->
+    <input type="text" [(ngModel)]="buscar" class="" 
+           placeholder="Ingrese el nombre a buscar" 
+           style="border-radius: 5px; color: black; padding: 5px; width: 50%;">
+    <!-- Campo de texto enlazado al modelo 'buscar' para filtrar Pokémon -->
+    <button (click)="buscarPokemon()" 
+            style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;">
+      Buscar
+    </button>
+    <!-- Botón que activa la búsqueda de Pokémon -->
+    <button (click)="openModalAgregar()" 
+            style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;" 
+            class="">
+      Agregar
+    </button>
+    <!-- Botón que abre el modal para agregar un nuevo Pokémon -->
+  </div>
+
+  <div class="pokedex-table">
+    <!-- Tabla que muestra la lista de Pokémon -->
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Avatar</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pokemon of paginatedData">
+          <!-- Itera sobre los datos paginados para mostrar cada Pokémon -->
+          <td>{{ pokemon.id }}</td>
+          <!-- Muestra el ID del Pokémon -->
+          <td>{{ pokemon.nombre }}</td>
+          <!-- Muestra el nombre del Pokémon -->
+          <td>
+            <div class="centrado">
+              <img class="avatar mx-auto" src="{{pokemon.avatar}}" alt="">
+            </div>
+            <!-- Muestra la imagen (avatar) del Pokémon -->
+          </td>
+          <td>
+            <!-- Botones para interactuar con cada Pokémon -->
+            <button class="accion" (click)="openModalInformacion(pokemon)">
+              <img src="iconos/busqueda.png" alt="">
+            </button>
+            <!-- Botón para abrir el modal de información -->
+            <button class="accion" (click)="openModalEditar(pokemon)">
+              <img src="iconos/lapiz.png" alt="">
+            </button>
+            <!-- Botón para abrir el modal de edición -->
+            <button class="accion" (click)="openModalEliminar(pokemon)">
+              <img src="iconos/borrar.png" alt="">
+            </button>
+            <!-- Botón para abrir el modal de eliminación -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modales para mostrar, editar, agregar y eliminar Pokémon -->
+  <app-informacion 
+    [data]="selectedPokemon" 
+    [isOpen]="isInformacionOpen" 
+    (close)="closeModalInformacion()">
+  </app-informacion>
+  <!-- Modal de información, recibe el Pokémon seleccionado y su estado -->
+
+  <app-eliminar 
+    [data]="selectedPokemon" 
+    [isOpen]="isEliminarOpen" 
+    (close)="closeModalEliminar()" 
+    (confirmar)="eliminarPokemon($event)">
+  </app-eliminar>
+  <!-- Modal de eliminación, recibe el Pokémon seleccionado y emite un evento para confirmar -->
+
+  <app-editar 
+    [data]="selectedPokemon" 
+    [isOpen]="isEditarOpen" 
+    (close)="closeModalEditar()" 
+    (confirmar)="editarPokemon($event)">
+  </app-editar>
+  <!-- Modal de edición, recibe el Pokémon seleccionado y emite un evento para confirmar -->
+
+  <app-agregar 
+    [isOpen]="isAgregarOpen" 
+    (close)="closeModalAgregar()" 
+    (confirmar)="agregarPokemon($event)">
+  </app-agregar>
+  <!-- Modal para agregar un nuevo Pokémon -->
+
+  <div class="pokedex-pagination" (change)="numeroPokemons($event)">
+    <!-- Controles de paginación -->
+    <select id="paginas" name="paginas">
+      <!-- Selector para elegir el número de elementos por página -->
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <button (click)="previousPage()" [disabled]="currentPage === 1">Anterior</button>
+    <!-- Botón para ir a la página anterior, desactivado si está en la primera página -->
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <!-- Muestra el número de página actual y el total de páginas -->
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+    <!-- Botón para ir a la siguiente página, desactivado si está en la última página -->
+  </div>
+</div>
+
+```
+
+
+
+
+
+
 
 
 ## Elaboración del login
