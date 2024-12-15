@@ -217,6 +217,149 @@ export class GeneralService {
 }
 ```
 
+## Componente pokemones 
+Este componente contiene una tabla la cual se usa para mostrar la lista de los pokemones que hay en la API, desde aqui se puede buscar, agregar pokemones, editar, ver y eliminar pokemones asi tambien cuenta con una paginacion.
+
+Para el funcionamiento en el typeScript están detallados las siguientes variables:
+La variable data almacena los pokemones que se muestran en la tabla.
+La variable selectedPokemon almacena al pokemon que fue seleccionado en la tabla.
+La isInformacionOpen, isEditarOpen, isEliminarOpen, isAgregarOpen sirven para validar si se muestran las ventanas modales respectivamente o no.
+Page size indica la cantidad de pokemones que se muestra en la tabla.
+CurrentPage indica la pagina actual de la paginación.
+paginatedData sirve para filtrar los pokemones que se mostrara la la página.
+Buscar es la variable que almacene el texto escrito en la entrada de buscar.
+
+```javascript
+  data: any[] = []; 
+  selectedPokemon: any = null; 
+  isInformacionOpen = false;
+  isEliminarOpen = false;
+  isEditarOpen = false;
+  isAgregarOpen = false;
+  pageSize = 5;
+  currentPage = 1;
+  paginatedData = this.data.slice(0, this.pageSize);
+  buscar = "";
+```
+
+Así también se encuentran los siguientes métodos que sirven para el funcionamiento del programa.
+Este método se ejecuta al inicio de la carga de la pagina lo que hace es acceder al método getPokemons del servicio de pokemones para obtener la lista de pokemones y guardarlos en data, posteriormente se ejecuta el método updatePaginatedData.
+
+```javascript
+  ngOnInit(): void {
+    this.pokemonservice.getPokemons().subscribe(resultado =>{
+      this.data = resultado;
+      this.updatePaginatedData();
+    })
+  }
+```
+
+Este método sirve para actualizar la paginación de la tabla modifica la cantidad de paginas a mostrar y modifica los pokemones que se muestran en la tabla, este se debe ejecutar cada que se modifique la cantidad de pokemones del api.
+
+```javascript
+  updatePaginatedData(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.data.slice(startIndex, endIndex);
+  }
+```
+
+Los siguientes metodos sirven para controlar las ventanas modales, openModal sirve para controlar cuando se abre un modal para esto recibe un pokemon y lo guarda en selectedPokemon despues cambia el estado de la variable isOpen a true para que se abra la ventana  modal, los metodos closModal ponene en null la variable selectedPokemon y cambian el estado de isOpen a false para que se cierre el modal.
+
+```javascript
+  openModalInformacion(pokemon: any) {
+    this.selectedPokemon = pokemon;
+    this.isInformacionOpen = true;
+  }
+
+  closeModalInformacion() {
+    this.selectedPokemon = null;
+    this.isInformacionOpen = false;
+  }
+
+  openModalEditar(pokemon: any) {
+    this.selectedPokemon = pokemon;
+    this.isEditarOpen = true;
+  }
+
+  closeModalEditar() {
+    this.selectedPokemon = null;
+    this.isEditarOpen = false;
+  }
+
+  openModalEliminar(pokemon: any) {
+    this.selectedPokemon = pokemon;
+    this.isEliminarOpen = true;
+  }
+
+  closeModalEliminar() {
+    this.selectedPokemon = null;
+    this.isEliminarOpen = false;
+  }
+
+  openModalAgregar() {
+    this.isAgregarOpen = true;
+  }
+
+  closeModalAgregar() {
+    this.selectedPokemon = null;
+    this.isAgregarOpen = false;
+  }
+```
+El siguiente metodo  sirve para agregar un pokemon para lo cual recibe un pokemon el cual es un objeto con los datos del pokemon y llama al metodo agregarPomeon del servicio de pokemones al cual se pasa el pokemon que se agregar finalmente ejecuta ngOnInit para actualizar la tabla y aparezca el pokemon agregado. Si la api devuelve un error encontnces lo imprime en consola.
+
+```javascript
+  agregarPokemon(pokemon: any){
+    this.pokemonservice.agregarPokemon(pokemon).subscribe(() => {
+      console.log('Pokémon agregado');
+      this.closeModalAgregar();
+    }, (error) => {
+      console.error('Error al agregar el Pokémon:', error);
+    });
+  }
+```
+
+Este metodo elimina un pokemon para lo cual recibe un objetos con los datos del pokemon a eliminar, llama al metodo eliminarPokemon que se encuentra en el servicio de pokemones y pasa solo el id del pokemon a eliminar, despues llama a ngOnInir para actualizar los datos de la tabla. Si hay un error en la API lo imprime 
+
+```javascript
+ eliminarPokemon(pokemon: any) {
+    this.pokemonservice.eliminarPokemon(pokemon.id).subscribe(() => {
+      this.ngOnInit();
+      this.updatePaginatedData(); 
+      this.closeModalEliminar();
+    }, (error) => {
+      console.error('Error al eliminar el Pokémon:', error);
+    });
+  }
+```
+Este metodo sirve para editar un pokemon para lo cual recibe un objeto con los datos a editar del pokemon, para esto llama al metodo editarPokemon del servicio de pokemon y pasa al objeto de pokemon para finalmente actualizar la tabla con ngOnInit, si hay un erro lo imprime en consola.
+
+```javascript
+ 
+  editarPokemon(pokemon: any) {
+    this.pokemonservice.editarPokemon(pokemon).subscribe(() => {
+      console.log('Pokémon ditado');
+      this.ngOnInit();
+    }, (error) => {
+      console.error('Error al editar el Pokémon:', error);
+    });
+  }
+```
+
+El siguiente metodo sirve se usa para que el usuario pueda elejir la cantidad de pokemones que se muestren en la tabla, esto se controla con un dezplegable en el HTML en donde se puede elejir diferentes cantidades de paginas, cada que cambia se ejecuta este metodo que actualiza los pokemones que se muestran.
+
+
+```javascript
+ numeroPokemons(event: any): void {
+    this.pageSize = parseInt(event.target.value, 10);
+    this.currentPage = 1;
+    this.updatePaginatedData();
+  }
+
+```
+
+
+
 ## Elaboración del login
  
 ```javascript
