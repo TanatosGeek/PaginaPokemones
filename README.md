@@ -502,6 +502,12 @@ El html de la tabla esta compuesto de la siguiente manera:
 
 ```
 
+![Uploading {53DBFEB4-4D32-4B2D-82BF-F3640DFA56D9}.png…]()
+
+![Uploading {C5D90CFD-2882-40B7-A6C5-D25DE9162516}.png…]()
+
+
+
 ## Modal agregar pokemon 
 Esta es una ventana modal que se muestra en donde se puede agregar un nuevo pokemon. El typscript esta compuesto por lo siguiente:
 
@@ -732,6 +738,9 @@ El html de esta ventana modal es el siguiente:
 
 
 ```
+
+![{F93E0686-14AF-4CDB-83FB-8ECBDC409BFC}](https://github.com/user-attachments/assets/e056c95e-9f96-459f-bb2a-df8eea563ef3)
+
 
 ## modal de editar pokemon
 
@@ -1000,6 +1009,215 @@ El html esta compuesto de la siguiente manera.
 ```
 
 
+## Componente Usuarios
+
+Este componente consta de una tabla que muestra todos los usuarios que hay en la API, para esto estan declarados los siguientes variables las cuales son las mismas que las de pokemon ya que trabajan de la misma forma  
+
+```javascript
+ data: any[] = [];
+  selectedUsuario: any = null;
+  isInformacionOpen = false;
+  isEliminarOpen = false;
+  isEditarOpen = false;
+  isAddOpen = false;
+  pageSize = 5;
+  currentPage = 1;
+  paginatedData: any[] = [];
+  buscar = '';
+```
+
+Este metodo llama al metodos getUser2 para obtener la lista de todos los usuarios y que se muestren en la tabla, se ejecuta antes de que se renderice la pagina.
+```javascript
+ ngOnInit(): void {
+    this.generalService.getUsers2().subscribe((resultado) => {
+      this.data = resultado;
+      this.updatePaginatedData();
+    });
+  }
+```
+
+Este metodo sirve para buscar a un usuario, lo que hace es leer la entrada de buscar, si no esta vacio llama al metodo buscar usuario y actualiza los datos de la tabla, si esta vacio llama ngOnInit para mostrar todos los usuarios en la tabla.
+```javascript
+buscarUsuarios(): void {
+    if (this.buscar !== '') {
+      this.generalService.buscarUsuario(this.buscar).subscribe(
+        (resultado) => {
+          this.data = resultado;
+          this.updatePaginatedData();
+        },
+        (error) => {
+          console.error('Error al buscar el Usuario:', error);
+        }
+      );
+    } else {
+      this.ngOnInit();
+    }
+  }
+```
+
+Los siguientes metodos controlar la apertura y cierre la las ventanaas modales.
+
+```javascript
+openModalInformacion(usuario: any): void {
+    this.selectedUsuario = usuario;
+    this.isInformacionOpen = true;
+  }
+
+  closeModalInformacion(): void {
+    this.selectedUsuario = null;
+    this.isInformacionOpen = false;
+  }
+
+  openModalEditar(usuario: any): void {
+    this.selectedUsuario = usuario;
+    this.isEditarOpen = true;
+  }
+
+  closeModalEditar(): void {
+    this.selectedUsuario = null;
+    this.isEditarOpen = false;
+  }
+
+  openModalEliminar(usuario: any): void {
+    this.selectedUsuario = usuario;
+    this.isEliminarOpen = true;
+  }
+
+  closeModalEliminar(): void {
+    this.selectedUsuario = null;
+    this.isEliminarOpen = false;
+  }
+```
+
+Este metodo llama al metodo deleteuser el servicio de usuarioa para eliminar un usuario, se le pasa el id del usuario y despues actualiza la tabla para que se actualicen los usuarios que se muestra.
+```javascript
+eliminarUsuario(usuario: any): void {
+    this.generalService.deleteUser(usuario.id).subscribe(
+      () => {
+        this.ngOnInit();
+        this.closeModalEliminar();
+      },
+      (error) => {
+        console.error('Error al eliminar el usuario:', error);
+      }
+    );
+  }
+```
+
+Este metodo llama al metodo updateUser del servicio de usuarios para editar un usario por lo que se le pasa el id del usuario a editar y sus datos a editar.
+
+```javascript
+editarUsuario(usuario: any): void {
+    this.generalService.updateUser(usuario.id, usuario).subscribe(
+      () => {
+        this.ngOnInit();
+      },
+      (error) => {
+        console.error('Error al editar el Usuario:', error);
+      }
+    );
+  }
+```
+
+El html esta de la siguiente manera.
+
+```javascript
+<div class="pokedex-container">
+  <div class="pokedex-header">
+    <h1>Usuarios</h1>
+  </div>
+
+  <div class="pokedex-buscar">
+    <input
+      type="text"
+      [(ngModel)]="buscar"
+      placeholder="Ingrese el nombre a buscar"
+      style="border-radius: 5px; color: black; padding: 5px; width: 50%;"
+    />
+    <button
+      (click)="buscarUsuarios()"
+      style="margin-left: 20px; background-color: cornflowerblue; border-radius: 5px; padding: 5px;"
+    >
+      Buscar
+    </button>
+  </div>
+
+  <div class="pokedex-table">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Avatar</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of paginatedData">
+          <td>{{ usuario.id }}</td>
+          <td>{{ usuario.name }}</td>
+          <td>
+            <div class="centrado">
+              <img class="avatar mx-auto" src="{{ usuario.avatar }}" alt="" />
+            </div>
+          </td>
+          <td>
+            <button class="accion" (click)="openModalInformacion(usuario)">
+              <img src="iconos/busqueda.png" alt="" />
+            </button>
+            <button class="accion" (click)="openModalEditar(usuario)">
+              <img src="iconos/lapiz.png" alt="" />
+            </button>
+            <button class="accion" (click)="openModalEliminar(usuario)">
+              <img src="iconos/borrar.png" alt="" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-info-usuario
+    [data]="selectedUsuario"
+    [isOpen]="isInformacionOpen"
+    (close)="closeModalInformacion()"
+  ></app-info-usuario>
+  <app-eliminar-usuario
+    [data]="selectedUsuario"
+    [isOpen]="isEliminarOpen"
+    (close)="closeModalEliminar()"
+    (confirmar)="eliminarUsuario($event)"
+  ></app-eliminar-usuario>
+  <app-editar-usuario
+    [data]="selectedUsuario"
+    [isOpen]="isEditarOpen"
+    (close)="closeModalEditar()"
+    (confirmar)="editarUsuario($event)"
+  ></app-editar-usuario>
+
+  <app-agregar-usuario
+  [data]="selectedUsuario"
+  [isOpen]="isEditarOpen"
+  (close)="closeModalEditar()"
+  ></app-agregar-usuario>
+
+  <div class="pokedex-pagination">
+    <select (change)="numeroPokemons($event)">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <button (click)="previousPage()" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+  </div>
+</div>
+
+```
+
+
+
 ## Elaboración del login
  
 ```javascript
@@ -1156,6 +1374,9 @@ export default class LoginComponent {
 	</div>
 </div>
 ```
+
+![Uploading {9AE43835-D3DF-4ACB-BD5B-DE34D64C26DD}.png…]()
+
 ## Elaboración del Register
 
 ```java
@@ -1346,6 +1567,8 @@ export default class RegisterComponent {
 </form>
 
 ```
+
+![{894E788F-2634-4BE2-BCD3-CCBE95818752}](https://github.com/user-attachments/assets/2a1cacb4-ffcd-422f-9500-72e43f5bed06)
 
 ## Elaboración del Footer
 
