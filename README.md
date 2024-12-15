@@ -1,4 +1,4 @@
-# PaginaPokemones
+![{F0C903CA-0620-465F-B4F8-65D815012C21}](https://github.com/user-attachments/assets/8dbda3a0-0bbe-46e3-a442-e82ce285c7fd)![{F0C903CA-0620-465F-B4F8-65D815012C21}](https://github.com/user-attachments/assets/1bda1413-3e66-40ee-b27c-1ab023618d69)# PaginaPokemones
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
 
@@ -502,9 +502,19 @@ El html de la tabla esta compuesto de la siguiente manera:
 
 ```
 
-![Uploading {53DBFEB4-4D32-4B2D-82BF-F3640DFA56D9}.png…]()
+![{5E2C2E7F-38FF-4646-8F9C-3F808418F3FF}](https://github.com/user-attachments/assets/3132d315-b779-4037-8687-3690dd66106b)
 
-![Uploading {C5D90CFD-2882-40B7-A6C5-D25DE9162516}.png…]()
+
+![{F0C903CA-0620-465F-B4F8-65D815012C21}](https://github.com/user-attachments/assets/3bb37fe6-eff9-40f0-8de8-789db8eaacbe)
+
+
+muestra del funcionamiento de buscar un pokemon.
+
+
+![{38CA44AE-1717-436D-AA2B-0F41057E4A50}](https://github.com/user-attachments/assets/c1920620-d8e7-409c-8d8f-c846fd7fab5a)
+
+
+
 
 
 
@@ -852,6 +862,9 @@ El html de este archivo esta compuesto de la siguiente manera.
 
 ```
 
+![{1F3D7D6A-1F4D-4189-B1DD-0D47008CF730}](https://github.com/user-attachments/assets/2b3dd719-db82-445f-a7ea-7d478eb61d52)
+
+
 ## modal eliminar pokemon
 Este modal muestra un simple mensaje de verificacion al usuario para confirmar si desea elminar el pokemon o no, el typescript es sencillo y consta de metodos que ya fueron descritos anteriormente, consta de dos entradas y dos eventos de salida uno para cerrar el modal sin hacer nada y otro para hacer referencia a que se acepto elminar el pokemon.
 
@@ -904,6 +917,8 @@ El html esta compuesto de la siguiente manera.
 </div>
 
 ```
+
+![{9964D02E-7557-4774-ABB8-D2322D20B7E3}](https://github.com/user-attachments/assets/d1fb63df-f78d-4146-b45c-32381bcbe89a)
 
 
 ## modal mostrar informacion
@@ -1007,6 +1022,8 @@ El html esta compuesto de la siguiente manera.
   </div>
 </div>
 ```
+
+![{74A21193-23C5-4EDF-937E-DC82A992C408}](https://github.com/user-attachments/assets/c47c2abc-5f9b-4b57-abf2-a5bc14ce81b8)
 
 
 ## Componente Usuarios
@@ -1215,6 +1232,28 @@ El html esta de la siguiente manera.
 </div>
 
 ```
+
+![{66EEC374-308D-4AC8-850E-E4274D0A5258}](https://github.com/user-attachments/assets/10e49dba-a972-4610-aa93-92e5afcbe992)
+
+## Modal mostrar informacion usuario
+
+tiene el mismo funcionamiento que el de agregr Pokemon solo cambian los nombre y los campos del html.
+![{754CFCCB-BBA1-45DD-9839-908E47D28FAA}](https://github.com/user-attachments/assets/e5680419-5e6e-42ca-bde5-8a478dcc7387)
+
+
+## Modal editar usuario 
+
+Esta es una ventana modal que sirve para editar la informacion de un usuario, tiene el mismo funcionamiento que el de editar pokemon solo cambia los nombres.
+
+![{F41AA3DA-860D-4889-808F-EFB6760202AE}](https://github.com/user-attachments/assets/90685dbb-164a-4c10-ab3b-16aaf09d1189)
+
+
+## modal eliminar usuario 
+
+Este es un modal de confirmacion de elminacion de un usuario tiene el mismo funcionamiento que el de eliminar pokemon solo que enfocado a usuarios en este caso.
+
+
+![{A71BA5E1-7683-4CF2-A94D-480841A6C312}](https://github.com/user-attachments/assets/67fa3b88-fc12-485c-b9cc-b5dd8ff9397e)
 
 
 
