@@ -599,10 +599,405 @@ Este metodo se ejecuta para eliminar una habilidad del pokemon. Esto se hace a t
   }
 ```
 
+El html de esta ventana modal es el siguiente:
+
+```html
+  <div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <!-- Modal contenedor principal. Se muestra solo si 'isOpen' es true -->
+  
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[700px] w-full relative border-4 border-black">
+    <!-- Caja principal del modal, con diseño de fondo rojo y bordes redondeados -->
+
+    <!-- Top section: Título del modal -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-white">
+      <h2 class="text-2xl font-bold text-center">Agregar Nuevo Pokémon</h2>
+      <!-- Encabezado con el título "Agregar Nuevo Pokémon" -->
+    </div>
+
+    <!-- Main section: Contenido del formulario -->
+    <div class="bg-gray-100 p-4 rounded-b-lg">
+      <form (ngSubmit)="agregarPokemon()">
+        <!-- Formulario que se envía al ejecutar la función 'agregarPokemon' -->
+
+        <div class="max-h-[500px] overflow-y-auto px-4">
+          <!-- Contenedor para los campos del formulario, con scroll si excede la altura -->
+
+          <!-- Campo para ingresar URL del avatar -->
+          <div class="mb-6">
+            <label for="avatar" class="block text-gray-700 font-bold">Avatar URL</label>
+            <input id="avatar" type="text" [(ngModel)]="pokemon.avatar" name="avatar" required
+              class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+            <!-- Previsualización de la imagen del avatar -->
+            <div class="flex items-center justify-center mt-2">
+              <img class="w-[120px] h-[120px] border-4 border-black rounded-full shadow"
+                [src]="pokemon.avatar || 'ruta/a/default/avatar.png'" alt="Avatar Preview" />
+            </div>
+          </div>
+
+          <!-- Campo para el nombre del Pokémon -->
+          <div class="mb-4">
+            <label for="nombre" class="block text-gray-700 font-bold">Nombre</label>
+            <input id="nombre" type="text" [(ngModel)]="pokemon.nombre" name="nombre" required
+              class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+          </div>
+
+          <!-- Campo para la descripción -->
+          <div class="mb-4">
+            <label for="descripcion" class="block text-gray-700 font-bold">Descripción</label>
+            <textarea id="descripcion" [(ngModel)]="pokemon.descripcion" name="descripcion" required
+              class="w-full p-2 border rounded text-gray-700 mb-2 font-bold"></textarea>
+          </div>
+
+          <!-- Campos para peso y altura -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="peso" class="block text-gray-700 font-bold">Peso</label>
+              <input id="peso" type="number" [(ngModel)]="pokemon.peso" name="peso" required
+                class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+            </div>
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Altura</label>
+              <input id="altura" type="number" [(ngModel)]="pokemon.altura" name="altura" required
+                class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+            </div>
+          </div>
+
+          <!-- Campos para estadísticas -->
+          <p class="text-gray-700 mb-2 font-bold">Estadísticas</p>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <!-- Repite para cada estadística (HP, ataque, defensa, etc.) -->
+            <div>
+              <label for="hp" class="block text-gray-700 font-bold capitalize">Hp</label>
+              <input id="hp" type="number" [(ngModel)]="pokemon.hp" name="hp" required
+                class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+            </div>
+            <div>
+              <label for="ataque" class="block text-gray-700 font-bold capitalize">Ataque</label>
+              <input id="ataque" type="number" [(ngModel)]="pokemon.ataque" name="ataque" required
+                class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+            </div>
+            <!-- Repite para las demás estadísticas -->
+          </div>
+
+          <!-- Campo para habilidades -->
+          <div class="mb-4">
+            <label for="habilidades" class="block text-gray-700 font-bold">Habilidades</label>
+            <!-- Campo para agregar habilidades (nombre y descripción) -->
+            <label for="habilidades" class="block text-gray-700 font-bold">Nombre de la habilidad</label>
+            <input id="habilidad-nombre" type="text" [(ngModel)]="habilidad.nombre" name="habilidad-nombre"
+              placeholder="Ingresa una habilidad y presiona Enter" 
+              class="w-full p-2 border rounded text-gray-700 mb-2 font-bold" />
+            <label for="habilidades" class="block text-gray-700 font-bold">Descripción de la habilidad</label>
+            <textarea id="habilidad-descripcion" [(ngModel)]="habilidad.descripcion" name="habilidad-descripcion"
+              placeholder="Descripción de la habilidad" 
+              class="w-full p-2 border rounded text-gray-700 mb-2 font-bold"></textarea>
+            <button type="button" (click)="agregarHabilidad()" 
+              style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;">
+              Agregar Habilidad
+            </button>
+            <!-- Muestra habilidades ya agregadas -->
+            <div class="mt-2 flex flex-wrap gap-2">
+              <span *ngFor="let habilidad of pokemon.habilidades" 
+                class="bg-blue-500 text-white px-3 py-1 rounded-full">
+                <div>
+                  <div>{{ habilidad.nombre }} <br> {{ habilidad.descripcion }}</div>
+                  <button type="button" class="ml-2 text-red-700 font-bold" (click)="eliminarHabilidad(habilidad)">
+                    <img src="iconos/boton-x.png" alt="">
+                  </button>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones para guardar o cancelar -->
+        <div class="flex justify-end space-x-4">
+          <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Elementos decorativos del modal -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>
 
 
+```
+
+## modal de editar pokemon
+
+Esta es una ventana modal que muestra un formulario para editar un pokemon, su funcionamiento es similar al de agregar pokemon tiene las mismas entradas y salidas y los metodos declarados aqui son los mismos que los de agregar, sin emabargo, añade un nuevo metodo que es el siguiente: 
+Este metodo sirve para crear un duplicado del pokemon que recibe de entrada la ventan modal, ya que si no se duplica al modificcar los datos del pokemon recibido se modifican directamente en la tabla en tiempo real por lo que es necesario crear un duplicado para que esto no suceda y asi si se cancela la operacion de editar no se guarden los cambios.
+ 
+```javascript
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && changes['data'].currentValue) {
+      this.pokemon = JSON.parse(JSON.stringify(this.data));
+    }
+  }
+```
+
+De ahi enfuera lo demas es similar al de agegar.
+
+El html de este archivo esta compuesto de la siguiente manera.
+
+```html
+  <div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[700px] w-full relative border-4 border-black">
+    <!-- Top section: Pokédex screen frame -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-black">
+      <h2 class="text-2xl font-bold text-center">Editar Pokémon</h2>
+    </div>
+
+    <!-- Main section: Form content -->
+    <div class="bg-gray-100 p-4 rounded-b-lg">
+      <form (ngSubmit)="editarPokemon()">
+        <div class="max-h-[500px] overflow-y-auto px-4">
+          <!-- Avatar -->
+          <div class="mb-6">
+            <label for="avatar" class="block text-gray-700 font-bold">Avatar URL</label>
+            <input id="avatar" type="text" [(ngModel)]="pokemon.avatar" name="avatar"
+              class="w-full p-2 border rounded" />
+            <div class="flex items-center justify-center mt-2">
+              <img class="w-[120px] h-[120px] border-4 border-black rounded-full shadow" [src]="pokemon.avatar" alt="Avatar Preview" />
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <div class="mb-4">
+            <label for="nombre" class="block text-gray-700 font-bold">Nombre</label>
+            <input id="nombre" type="text" [(ngModel)]="pokemon.nombre" name="nombre"
+              class="w-full p-2 border rounded" />
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-4">
+            <label for="descripcion" class="block text-gray-700 font-bold">Descripción</label>
+            <textarea id="descripcion" [(ngModel)]="pokemon.descripcion" name="descripcion"
+              class="w-full p-2 border rounded"></textarea>
+          </div>
+
+          <!-- Peso y Altura -->
+          <div class="flex space-x-4 mb-4">
+            <div>
+              <label for="peso" class="block text-gray-700 font-bold">Peso</label>
+              <input id="peso" type="number" [(ngModel)]="pokemon.peso" name="peso"
+                class="w-full p-2 border rounded" />
+            </div>
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Altura</label>
+              <input id="altura" type="number" [(ngModel)]="pokemon.altura" name="altura"
+                class="w-full p-2 border rounded" />
+            </div>
+          </div>
+
+          <!-- Estadísticas -->
+          <p class="text-gray-700 mb-2 font-bold">Estadísticas</p>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div *ngFor="let stat of ['hp', 'ataque', 'defensa', 'ataque_especial', 'defensa_especial', 'velocidad']">
+              <label [for]="stat" class="block text-gray-700 font-bold capitalize">{{ stat }}</label>
+              <input [id]="stat" type="number" [(ngModel)]="pokemon[stat]" [name]="stat"
+                class="w-full p-2 border rounded" />
+            </div>
+          </div>
+
+          <!-- Habilidades -->
+          <p class="text-gray-700 mb-2 font-bold">Habilidades</p>
+          <div *ngFor="let habilidad of pokemon.habilidades; let i = index" class="mb-4">
+            <label class="block text-gray-700 font-bold">Habilidad {{ i + 1 }}</label>
+            <input type="text" [(ngModel)]="pokemon.habilidades[i].nombre" [name]="'habilidad_' + i + '_nombre'"
+              placeholder="Nombre de la habilidad" class="w-full p-2 border rounded mb-2" />
+            <textarea [(ngModel)]="pokemon.habilidades[i].descripcion" [name]="'habilidad_' + i + '_descripcion'"
+              placeholder="Descripción" class="w-full p-2 border rounded"></textarea>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4">
+          <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Pokédex Buttons -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>
+
+```
+
+## modal eliminar pokemon
+Este modal muestra un simple mensaje de verificacion al usuario para confirmar si desea elminar el pokemon o no, el typescript es sencillo y consta de metodos que ya fueron descritos anteriormente, consta de dos entradas y dos eventos de salida uno para cerrar el modal sin hacer nada y otro para hacer referencia a que se acepto elminar el pokemon.
+
+```javascript
+  @Input() data: any = {};
+  @Input() isOpen = false; 
+  @Output() close = new EventEmitter<void>(); 
+  @Output() confirmar = new EventEmitter<any>();
+
+  closeModal() {
+    this.close.emit(); 
+  }
+
+  borrarPokemon() {
+    this.confirmar.emit(this.data); 
+    this.closeModal(); 
+  }
+```
+
+El html esta compuesto de la siguiente manera.
+```html
+ <div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[500px] w-full relative border-4 border-black">
+    <!-- Top section: Pokédex screen frame -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-white">
+      <h2 class="text-2xl font-bold text-center">Eliminar Pokémon</h2>
+    </div>
+
+    <!-- Main section: Confirmation content -->
+    <div class="bg-gray-100 p-4 rounded-b-lg text-center">
+      <p class="text-gray-700 text-lg font-bold mb-6">¿Estás seguro que deseas eliminar al Pokémon <span class="text-red-500">{{data.nombre}}</span>?</p>
+
+      <!-- Buttons -->
+      <div class="flex justify-center space-x-4">
+        <button class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="px-4 py-2 bg-blue-500 text-white rounded" (click)="borrarPokemon()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+
+    <!-- Pokédex Buttons -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>
+
+```
 
 
+## modal mostrar informacion
+
+Esta vetana sirve para mostrar la informacion de un pokemon, el TypeScript es sencillo contiene metrodos ya descritos, consta de dos Inputs para controlar si se myuestra o no y los datos del pokemon a mostrar, y un Output para emitir el evento de cierre del modal.  
+
+```javascript
+  export class InformacionComponent {
+  @Input() data: any = {};
+  @Input() isOpen = false; 
+  @Output() close = new EventEmitter<void>(); 
+
+  closeModal() {
+    this.close.emit(); 
+  }
+}
+```
+
+El html esta compuesto de la siguiente manera.
+
+```html
+ <div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[600px] relative border-4 border-black">
+    <!-- Top screen (Pokédex-style frame) -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4">
+      <h2 class="text-white text-2xl font-bold text-center mb-2">{{data.nombre}}</h2>
+      <div class="flex items-center justify-center mb-4">
+        <img class="w-[150px] h-[150px] rounded-full border-4 border-black shadow-md" src="{{data.avatar}}"
+          alt="{{data.nombre}}" />
+      </div>
+    </div>
+    <!-- Main screen content -->
+
+
+    <div class="bg-gray-100 rounded-b-lg p-4">
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Detalles</h3>
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="text-gray-700 text-sm text-center mb-2">{{data.descripcion}}</p>
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Peso</p>
+          <p class="text-gray-700">{{data.peso}} kg</p>
+        </div>
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Altura</p>
+          <p class="text-gray-700">{{data.altura}} m</p>
+        </div>
+      </div>
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Estadísticas</h3>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">HP</p>
+            <p class="text-gray-700">{{data.hp}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Ataque</p>
+            <p class="text-gray-700">{{data.ataque}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Defensa</p>
+            <p class="text-gray-700">{{data.defensa}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Ataque Esp.</p>
+            <p class="text-gray-700">{{data.ataque_especial}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Defensa Esp.</p>
+            <p class="text-gray-700">{{data.defensa_especial}}</p>
+          </div>
+          <div class="bg-gray-200 p-2 rounded text-center">
+            <p class="font-bold text-gray-700">Velocidad</p>
+            <p class="text-gray-700">{{data.velocidad}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Habilidades</h3>
+        <div *ngFor="let habilidad of data.habilidades" class="bg-gray-200 p-2 rounded mb-2">
+          <p class="font-bold text-gray-700">{{habilidad.nombre}}</p>
+          <p class="text-sm text-gray-700">{{habilidad.descripcion}}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Pokédex buttons -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+    <div class="absolute bottom-2 right-2">
+      <button class="px-4 py-2 bg-red-600 text-white rounded" (click)="closeModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+```
 
 
 ## Elaboración del login
