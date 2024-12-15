@@ -30,6 +30,193 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 # Creación de la pagina WEB de Pokémones
 En este trabajo se abordara la cracion de la pagina web que tendra como objetivo tener usuarios y poder ver los diferentes pokemones que alberga esta.
 
+
+## Creación de servicios generales de Pokemones
+
+Este servicio se creo para controlar las peticiones hacia los pokemones del api que se creó en laravel usando el comando npm generate service pokemon a continuación se describen los métodos para acceder a los pokemones del api.
+
+La url usada para acceder a los pokemones del API es la siguiente: 'http://127.0.0.1:8000/api/pokemons'
+
+```javascript
+import { HttpClient } from '@angular/common/http'; // Importa HttpClient para hacer solicitudes HTTP.
+import { Injectable } from '@angular/core'; // Importa el decorador Injectable para que el servicio sea inyectado.
+import { BehaviorSubject, map, Observable } from 'rxjs'; // Importa BehaviorSubject, map y Observable de RxJS.
+
+@Injectable({
+  providedIn: 'root' // Hace que el servicio esté disponible de forma global en la aplicación.
+})
+export class PokemonService {
+
+  private apiUrl = 'http://127.0.0.1:8000/api/pokemons'; // URL de la API para interactuar con los Pokémon.
+
+  constructor(private http: HttpClient) { } // Inyecta HttpClient para hacer solicitudes HTTP.
+
+  // Método para obtener todos los Pokémon desde la API
+  getPokemons(): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl).pipe( // Realiza una solicitud GET para obtener todos los Pokémon
+      map(response => response.pokemons) // Mapea la respuesta para obtener solo el array de Pokémon
+    );
+  }
+
+  // Método para buscar un Pokémon por nombre
+  buscarPokemon(nombre: any): Observable<any[]> {
+    return this.http.get<any>(`${this.apiUrl}/buscar/${nombre}`).pipe( // Realiza una solicitud GET para buscar un Pokémon por nombre
+      map(response => response.pokemons) // Extrae los Pokémon de la respuesta
+    );
+  }
+
+  // Método para eliminar un Pokémon por ID
+  eliminarPokemon(id: any) {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`); // Realiza una solicitud DELETE para eliminar un Pokémon
+  }
+
+  // Método para editar un Pokémon
+  editarPokemon(pokemon: any) {
+    return this.http.put<any>(`${this.apiUrl}/${pokemon.id}`, pokemon); // Realiza una solicitud PUT para editar los datos de un Pokémon específico
+  }
+
+  // Método para agregar un nuevo Pokémon
+  agregarPokemon(pokemon: any) {
+    return this.http.post<any>(this.apiUrl, pokemon); // Realiza una solicitud POST para agregar un nuevo Pokémon
+  }
+}
+```
+
+#### getpokemons
+Este método sirve para obtener todos los pokemones que hay en el API para esto realiza una petición get a la URL del API posteriormente se mapea el resultado para obtener solo la lista de los pokemones ya que la api retorna también el mensaje de éxito el cual no interesa, finalmente se retorna la lista de los pokemones.
+
+```javascript
+ getPokemons(): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => response.pokemons)
+    );
+  }
+```
+
+#### bsucarPokemon
+Este método recibe un nombre y realiza una petición get, al URL de la API se le concatena la palabra buscar y el nombre a buscar, finalmente con pipe se accede a la lista de pokemones y lo retorna.
+
+```javascript
+ buscarPokemon(nombre: any): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl+'/buscar/'+nombre).pipe(
+      map(response => response.pokemons)
+    );
+  }
+```
+
+#### eliminarPokemon
+Este método recobe el id de un pokemon y sirve para eliminar un pokemon en base al id de este, para esto realiza una petición delete al API y a la URL se le concatena un ”/” mas el id del pokemon a eliminar.
+
+```javascript
+  eliminarPokemon(id: any){
+    return this.http.delete<any>(this.apiUrl+'/'+id);
+  }
+```
+
+#### editarPokemon
+Este método sirve para editar un pokemon para lo cual recibe un JSON con los datos del pokemon a editar, para esto realiza una petición put al API y a la URL se le concatena el id del pokemon a editar el cual se encuentra en el JSON de los datos del pokemon y también a la petición se le pasan todos los datos del pokemon los cuales se van a editar.
+
+```javascript
+  editarPokemon(pokemon:any){
+    return this.http.put<any>(this.apiUrl+'/'+pokemon.id,pokemon);
+  }
+```
+
+#### agregarPokemon
+Este método sirve para agregar un pokemon a la API para lo cual recibe un json con los datos del pokemon a a agregar, para esto realiza una petición post al API al cual se le pasa el json con los datos del pokemon.
+
+```javascript
+  agregarPokemon(pokemon:any){
+    return this.http.post<any>(this.apiUrl,pokemon);
+  }
+```
+
+## Creación de los servicios generales de usuarios
+
+Este servicio sirve para acceder a los datos del API de los usuarios, tinee el mismo funcionamiento y los mismos metedotos que el servicio de pokemon y funcionan de la misma maenra, la unica diferencia es que esta enfocados a los usuarios del API asis mismo para acceder a los usuarios del API se usa la siguiente URL 'http://127.0.0.1:8000/api/usuarios'.
+
+```javascript
+import { Injectable } from '@angular/core'; // Importa el decorador Injectable para que el servicio pueda ser inyectado en otros componentes o servicios.
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'; // Importa HttpClient para hacer solicitudes HTTP y HttpErrorResponse para manejar errores HTTP.
+import { Observable, BehaviorSubject, throwError } from 'rxjs'; // Importa Observable para manejar flujos de datos, BehaviorSubject para el estado del usuario y throwError para manejar errores.
+import { catchError, map } from 'rxjs/operators'; // Importa operadores de RxJS para manejar flujos de datos y errores.
+
+@Injectable({
+  providedIn: 'root' // Hace que el servicio esté disponible de forma global en la aplicación, sin necesidad de especificar un módulo.
+})
+export class GeneralService {
+  private apiUrl = 'http://127.0.0.1:8000/api/usuarios'; // URL de la API para acceder a los usuarios.
+  private currentUserSubject = new BehaviorSubject<any | null>(null); // Estado del usuario actual, inicialmente es null.
+
+  constructor(private http: HttpClient) {} // Inyecta HttpClient para hacer solicitudes HTTP.
+
+  // Método para obtener usuarios desde la API
+  getUsers(): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl).pipe( // Realiza una solicitud GET a la API
+      map(response => response.usuarios), // Extrae los usuarios del objeto de respuesta
+      catchError(this.handleError) // Maneja cualquier error que ocurra en la solicitud
+    );
+  }
+  
+  // Método alternativo para obtener usuarios (sin manejo de errores)
+  getUsers2(): Observable<any[]> {
+    return this.http.get<any>(this.apiUrl).pipe(
+      map(response => response.usuarios) // Extrae los usuarios de la respuesta
+    );
+  }
+
+  // Método para eliminar un usuario
+  deleteUser(userId: any) {
+    return this.http.delete<any>(`${this.apiUrl}/${userId}`).pipe( // Realiza una solicitud DELETE para eliminar el usuario
+      map(response => response.usuarios) // Extrae la lista de usuarios de la respuesta
+    );
+  }
+
+  // Método para buscar un usuario por nombre
+  buscarUsuario(nombre: any): Observable<any[]> {
+    return this.http.get<any>(`${this.apiUrl}/buscar/${nombre}`).pipe(); // Realiza una solicitud GET para buscar usuarios por nombre
+  }
+
+  // Método para guardar los datos del usuario autenticado
+  setCurrentUser(user: any): void {
+    this.currentUserSubject.next(user); // Actualiza el estado del usuario actual
+  }
+
+  // Método para obtener los datos del usuario autenticado
+  getCurrentUser(): Observable<any | null> {
+    return this.currentUserSubject.asObservable(); // Devuelve un Observable con el estado del usuario actual
+  }
+
+  // Método para actualizar los datos de un usuario
+  updateUser(userId: string, updatedData: any): Observable<any> {
+    const url = `${this.apiUrl}/${userId}`; // Crea la URL para actualizar el usuario específico
+    return this.http.put<any>(url, updatedData).pipe( // Realiza una solicitud PUT para actualizar el usuario
+      map(response => response.usuario), // Extrae los datos del usuario actualizado de la respuesta
+      catchError(this.handleError) // Maneja cualquier error en la solicitud
+    );
+  }
+  
+  // Método para manejar errores HTTP
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocurrió un error desconocido'; // Mensaje de error por defecto
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`; // Extrae el mensaje de error si es del lado del cliente
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error código ${error.status}: ${error.message}`; // Extrae el código de estado y mensaje si es del servidor
+    }
+    console.error(errorMessage); // Imprime el mensaje de error en la consola
+    return throwError(() => new Error(errorMessage)); // Lanza un error para que lo maneje quien haya llamado al servicio
+  }
+
+  // Método para registrar un nuevo usuario
+  registerUser(userData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, userData).pipe(); // Realiza una solicitud POST para registrar un nuevo usuario
+  }
+}
+```
+
 ## Elaboración del login
  
 ```javascript
@@ -1022,133 +1209,3 @@ bootstrapApplication(AppComponent, appConfig)
 @tailwind utilities;
 ```
 
-## Creación de los servicios generales de usuarios
-
-```javascript
-import { Injectable } from '@angular/core'; // Importa el decorador Injectable para que el servicio pueda ser inyectado en otros componentes o servicios.
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'; // Importa HttpClient para hacer solicitudes HTTP y HttpErrorResponse para manejar errores HTTP.
-import { Observable, BehaviorSubject, throwError } from 'rxjs'; // Importa Observable para manejar flujos de datos, BehaviorSubject para el estado del usuario y throwError para manejar errores.
-import { catchError, map } from 'rxjs/operators'; // Importa operadores de RxJS para manejar flujos de datos y errores.
-
-@Injectable({
-  providedIn: 'root' // Hace que el servicio esté disponible de forma global en la aplicación, sin necesidad de especificar un módulo.
-})
-export class GeneralService {
-  private apiUrl = 'http://127.0.0.1:8000/api/usuarios'; // URL de la API para acceder a los usuarios.
-  private currentUserSubject = new BehaviorSubject<any | null>(null); // Estado del usuario actual, inicialmente es null.
-
-  constructor(private http: HttpClient) {} // Inyecta HttpClient para hacer solicitudes HTTP.
-
-  // Método para obtener usuarios desde la API
-  getUsers(): Observable<any[]> {
-    return this.http.get<any>(this.apiUrl).pipe( // Realiza una solicitud GET a la API
-      map(response => response.usuarios), // Extrae los usuarios del objeto de respuesta
-      catchError(this.handleError) // Maneja cualquier error que ocurra en la solicitud
-    );
-  }
-  
-  // Método alternativo para obtener usuarios (sin manejo de errores)
-  getUsers2(): Observable<any[]> {
-    return this.http.get<any>(this.apiUrl).pipe(
-      map(response => response.usuarios) // Extrae los usuarios de la respuesta
-    );
-  }
-
-  // Método para eliminar un usuario
-  deleteUser(userId: any) {
-    return this.http.delete<any>(`${this.apiUrl}/${userId}`).pipe( // Realiza una solicitud DELETE para eliminar el usuario
-      map(response => response.usuarios) // Extrae la lista de usuarios de la respuesta
-    );
-  }
-
-  // Método para buscar un usuario por nombre
-  buscarUsuario(nombre: any): Observable<any[]> {
-    return this.http.get<any>(`${this.apiUrl}/buscar/${nombre}`).pipe(); // Realiza una solicitud GET para buscar usuarios por nombre
-  }
-
-  // Método para guardar los datos del usuario autenticado
-  setCurrentUser(user: any): void {
-    this.currentUserSubject.next(user); // Actualiza el estado del usuario actual
-  }
-
-  // Método para obtener los datos del usuario autenticado
-  getCurrentUser(): Observable<any | null> {
-    return this.currentUserSubject.asObservable(); // Devuelve un Observable con el estado del usuario actual
-  }
-
-  // Método para actualizar los datos de un usuario
-  updateUser(userId: string, updatedData: any): Observable<any> {
-    const url = `${this.apiUrl}/${userId}`; // Crea la URL para actualizar el usuario específico
-    return this.http.put<any>(url, updatedData).pipe( // Realiza una solicitud PUT para actualizar el usuario
-      map(response => response.usuario), // Extrae los datos del usuario actualizado de la respuesta
-      catchError(this.handleError) // Maneja cualquier error en la solicitud
-    );
-  }
-  
-  // Método para manejar errores HTTP
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocurrió un error desconocido'; // Mensaje de error por defecto
-    if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
-      errorMessage = `Error: ${error.error.message}`; // Extrae el mensaje de error si es del lado del cliente
-    } else {
-      // Error del lado del servidor
-      errorMessage = `Error código ${error.status}: ${error.message}`; // Extrae el código de estado y mensaje si es del servidor
-    }
-    console.error(errorMessage); // Imprime el mensaje de error en la consola
-    return throwError(() => new Error(errorMessage)); // Lanza un error para que lo maneje quien haya llamado al servicio
-  }
-
-  // Método para registrar un nuevo usuario
-  registerUser(userData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, userData).pipe(); // Realiza una solicitud POST para registrar un nuevo usuario
-  }
-}
-```
-
-## Creación de servicios generales de Pokemones
-
-```javascript
-import { HttpClient } from '@angular/common/http'; // Importa HttpClient para hacer solicitudes HTTP.
-import { Injectable } from '@angular/core'; // Importa el decorador Injectable para que el servicio sea inyectado.
-import { BehaviorSubject, map, Observable } from 'rxjs'; // Importa BehaviorSubject, map y Observable de RxJS.
-
-@Injectable({
-  providedIn: 'root' // Hace que el servicio esté disponible de forma global en la aplicación.
-})
-export class PokemonService {
-
-  private apiUrl = 'http://127.0.0.1:8000/api/pokemons'; // URL de la API para interactuar con los Pokémon.
-
-  constructor(private http: HttpClient) { } // Inyecta HttpClient para hacer solicitudes HTTP.
-
-  // Método para obtener todos los Pokémon desde la API
-  getPokemons(): Observable<any[]> {
-    return this.http.get<any>(this.apiUrl).pipe( // Realiza una solicitud GET para obtener todos los Pokémon
-      map(response => response.pokemons) // Mapea la respuesta para obtener solo el array de Pokémon
-    );
-  }
-
-  // Método para buscar un Pokémon por nombre
-  buscarPokemon(nombre: any): Observable<any[]> {
-    return this.http.get<any>(`${this.apiUrl}/buscar/${nombre}`).pipe( // Realiza una solicitud GET para buscar un Pokémon por nombre
-      map(response => response.pokemons) // Extrae los Pokémon de la respuesta
-    );
-  }
-
-  // Método para eliminar un Pokémon por ID
-  eliminarPokemon(id: any) {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`); // Realiza una solicitud DELETE para eliminar un Pokémon
-  }
-
-  // Método para editar un Pokémon
-  editarPokemon(pokemon: any) {
-    return this.http.put<any>(`${this.apiUrl}/${pokemon.id}`, pokemon); // Realiza una solicitud PUT para editar los datos de un Pokémon específico
-  }
-
-  // Método para agregar un nuevo Pokémon
-  agregarPokemon(pokemon: any) {
-    return this.http.post<any>(this.apiUrl, pokemon); // Realiza una solicitud POST para agregar un nuevo Pokémon
-  }
-}
-```
