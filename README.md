@@ -502,6 +502,102 @@ El html de la tabla esta compuesto de la siguiente manera:
 
 ```
 
+## Modal agregar pokemon 
+Esta es una ventana modal que se muestra en donde se puede agregar un nuevo pokemon. El typscript esta compuesto por lo siguiente:
+
+Esto sirve para determinar las entradas y salidas que tendra el modal, para esto con @Input se declara los datos de entrada que tiene el modal los cuales se especifican cuando se llama al componente desde el html, con Output se puede especificar datos o eventos que mandara cuando se cierre la ventana modal.
+
+```html
+ <app-agregar 
+    [isOpen]="isAgregarOpen" 
+    (close)="closeModalAgregar()" 
+    (confirmar)="agregarPokemon($event)">
+  </app-agregar>
+```
+
+```javascript
+@Input() isOpen = false;
+  @Output() close = new EventEmitter<void>();
+  @Output() confirmar = new EventEmitter<any>();
+```
+
+lo siguiente es una estrictura de los datos que se requieren para crear un pokemon y una habilidad.
+
+```javascript
+pokemon: {
+    id: number;
+    nombre: string;
+    avatar: string;
+    descripcion: string;
+    peso: number;
+    altura: number;
+    hp: number;
+    ataque: number;
+    defensa: number;
+    ataque_especial: number;
+    defensa_especial: number;
+    velocidad: number;
+    habilidades: any[];
+  } = {
+    id: 0,
+    nombre: '',
+    avatar: '',
+    descripcion: '',
+    peso: 0,
+    altura: 0,
+    hp: 0,
+    ataque: 0,
+    defensa: 0,
+    ataque_especial: 0,
+    defensa_especial: 0,
+    velocidad: 0,
+    habilidades: []
+  };
+
+
+  habilidad = {
+    nombre: '',
+    descripcion: ''
+  };
+```
+
+Este metodo controla que la ventana modal se cierre.
+
+
+```javascript
+ closeModal() {
+    this.close.emit(); 
+  }
+```
+
+Este metodo emite un evento de confirmacion para que se agrege un pokemon y despues se cierra la ventana modal.
+
+```javascript
+  agregarPokemon() {
+    this.confirmar.emit(this.pokemon); 
+    this.closeModal();
+  }
+```
+
+Este metrodo sirve para agregar un habilida al pokemon, para lo cual agregar la habilidad a la lista de habilidades de la variable de pokemon, esto permite agregar varias habilidades a un solo pokeon a travez de un boton en el html.
+
+```javascript
+  agregarHabilidad() {
+    if (this.habilidad) {
+      const nuevaHabilidad = { ...this.habilidad };
+      this.pokemon.habilidades.push(nuevaHabilidad);
+      this.habilidad.nombre = '';
+      this.habilidad.descripcion = '';
+    }
+  }
+```
+
+Este metodo se ejecuta para eliminar una habilidad del pokemon. Esto se hace a travez de un boton en el html
+```javascript
+  eliminarHabilidad(habilidad: any) {
+    this.pokemon.habilidades = this.pokemon.habilidades.filter(h => h !== habilidad);
+  }
+```
 
 
 
