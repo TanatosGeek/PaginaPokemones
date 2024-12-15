@@ -32,5 +32,9 @@ export class PokemonService {
   editarPokemon(pokemon:any){
     return this.http.put<any>(this.apiUrl+'/'+pokemon.id,pokemon);
   }
+
+  agregarPokemon(pokemon:any){
+    return this.http.post<any>(this.apiUrl,pokemon);
+  }
 }
 

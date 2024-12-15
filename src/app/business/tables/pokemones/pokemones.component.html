@@ -9,7 +9,7 @@
     
     <input type="text" [(ngModel)]="buscar" class="" placeholder="Ingrese el nombre a buscar" style="border-radius: 5px; color: black; padding: 5px; width: 50%;">
     <button (click)="buscarPokemon()" style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;">Buscar</button>
-    <button (click)="buscarPokemon()" style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;">Agregar</button>
+    <button (click)="openModalAgregar()" style="margin-left: 20px; background-color:cornflowerblue; border-radius: 5px; padding: 5px;" class="">Agregar</button>
   </div>
 
   <div class="pokedex-table">
@@ -55,6 +55,7 @@
   <app-informacion [data]="selectedPokemon" [isOpen]="isInformacionOpen" (close)="closeModalInformacion()"></app-informacion>
   <app-eliminar [data]="selectedPokemon" [isOpen]="isEliminarOpen" (close)="closeModalEliminar()" (confirmar)="eliminarPokemon($event)"></app-eliminar>
   <app-editar [data]="selectedPokemon" [isOpen]="isEditarOpen" (close)="closeModalEditar()" (confirmar)="editarPokemon($event)"></app-editar>
+  <app-agregar [isOpen]="isAgregarOpen" (close)="closeModalAgregar()" (confirmar)="agregarPokemon($event)"></app-agregar>
 
   <div class="pokedex-pagination" (change)="numeroPokemons($event)">
     <select id="paginas" name="paginas">

@@ -18,13 +18,14 @@ import { InformacionComponent } from '../modal/informacion/informacion.component
 import { EliminarComponent } from '../modal/eliminar/eliminar.component';
 import { EditarComponent } from '../modal/editar/editar.component';
 import { FormsModule } from '@angular/forms';
+import { AgregaComponent } from '../modal/agrega/agrega.component';
 
 @Component({
   selector: 'app-pokemones',
   standalone: true,
   templateUrl: './pokemones.component.html',
   styleUrls: ['./pokemones.component.css'],
-  imports: [FormsModule,EditarComponent,NgFor, MatIconModule, MatButtonModule, MatDividerModule, InformacionComponent, EliminarComponent]
+  imports: [AgregaComponent, FormsModule,EditarComponent,NgFor, MatIconModule, MatButtonModule, MatDividerModule, InformacionComponent, EliminarComponent]
 })
 export default class PokemonesComponent implements OnInit{
   data: any[] = []; 
@@ -32,6 +33,7 @@ export default class PokemonesComponent implements OnInit{
   isInformacionOpen = false;
   isEliminarOpen = false;
   isEditarOpen = false;
+  isAgregarOpen = false;
 
   constructor(private pokemonservice: PokemonService){
   }
@@ -96,6 +98,25 @@ export default class PokemonesComponent implements OnInit{
   closeModalEliminar() {
     this.selectedPokemon = null;
     this.isEliminarOpen = false;
+  }
+
+  openModalAgregar() {
+    this.isAgregarOpen = true;
+  }
+
+  closeModalAgregar() {
+    this.selectedPokemon = null;
+    this.isAgregarOpen = false;
+  }
+
+  agregarPokemon(pokemon: any){
+    this.pokemonservice.agregarPokemon(pokemon).subscribe(() => {
+      console.log('Pokémon agregado');
+      this.ngOnInit();
+      this.closeModalAgregar();
+    }, (error) => {
+      console.error('Error al agregar el Pokémon:', error);
+    });
   }
 
   eliminarPokemon(pokemon: any) {
