@@ -1238,12 +1238,291 @@ El html esta de la siguiente manera.
 ## Modal mostrar informacion usuario
 
 tiene el mismo funcionamiento que el de agregr Pokemon solo cambian los nombre y los campos del html.
+
+El TypeScript esta compuesto de la siguiente manera:
+
+```javascript
+import { NgFor, NgIf } from '@angular/common'; // Importa las directivas NgFor y NgIf necesarias para usar en la plantilla
+import { Component, EventEmitter, Input, Output } from '@angular/core'; // Importa Component, EventEmitter, Input y Output de Angular
+
+@Component({
+  selector: 'app-info-usuario', // Define el nombre del selector para usar este componente en otros lugares
+  standalone: true, // Marca el componente como autónomo, lo que significa que no necesita ser declarado en un módulo
+  imports: [NgFor, NgIf], // Importa las directivas necesarias (NgIf para condicionales y NgFor para bucles)
+  templateUrl: './info-usuario.component.html', // Ruta al archivo HTML para la plantilla del componente
+  styleUrl: './info-usuario.component.css' // Ruta al archivo CSS para los estilos del componente
+})
+export class InfoUsuarioComponent {
+  // Propiedades de entrada del componente
+  @Input() data: any = {}; // Recibe los datos del usuario como entrada
+  @Input() isOpen = false; // Recibe un valor booleano para controlar si el modal está abierto o cerrado
+  @Output() close = new EventEmitter<void>(); // Crea un EventEmitter que enviará una señal al componente padre para cerrar el modal
+
+  // Método para cerrar el modal
+  closeModal() {
+    this.close.emit(); // Emite el evento 'close' que notificará al componente padre para cerrar el modal
+  }
+}
+
+```
+
+```html
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <!-- Modal container: Aparece solo si isOpen es verdadero -->
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[600px] relative border-4 border-black">
+    
+    <!-- Header section -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4">
+      <!-- Título con el nombre del usuario -->
+      <h2 class="text-white text-2xl font-bold text-center mb-2">{{data.name}}</h2>
+      <!-- Avatar del usuario -->
+      <div class="flex items-center justify-center mb-4">
+        <img class="w-[150px] h-[150px] rounded-full border-4 border-black shadow-md" src="{{data.avatar}}"
+          alt="{{data.name}}" />
+      </div>
+    </div>
+
+    <!-- Main screen content -->
+    <div class="bg-gray-100 rounded-b-lg p-4">
+      <!-- Sección de detalles -->
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-red-600 mb-2">Detalles</h3>
+      </div>
+
+      <!-- Grid de detalles del usuario -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <!-- Nombre -->
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Nombres</p>
+          <p class="text-gray-700">{{data.name}}</p>
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Apellido Paterno</p>
+          <p class="text-gray-700">{{data.apellidoP}} m</p>
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Apellido Materno</p>
+          <p class="text-gray-700">{{data.apellidoM}}</p>
+        </div>
+
+        <!-- Correo Electrónico -->
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Correo Electrónico</p>
+          <p class="text-gray-700">{{data.email}}</p>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="bg-gray-200 p-2 rounded text-center">
+          <p class="font-bold text-gray-700">Télefono</p>
+          <p class="text-gray-700">{{data.phone}}</p>
+        </div>
+      </div>
+
+      <!-- Usuario Buttons (Mini Pokédex Buttons) -->
+      <div class="absolute top-2 right-2 flex space-x-2">
+        <!-- Indicadores de estado (p.ej. verde y azul, similares a los botones de la Pokédex) -->
+        <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+        <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+      </div>
+
+      <!-- Botón para cerrar el modal -->
+      <div class="absolute bottom-2 right-2">
+        <button class="px-4 py-2 bg-red-600 text-white rounded" (click)="closeModal()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+```
 ![{754CFCCB-BBA1-45DD-9839-908E47D28FAA}](https://github.com/user-attachments/assets/e5680419-5e6e-42ca-bde5-8a478dcc7387)
 
 
 ## Modal editar usuario 
 
 Esta es una ventana modal que sirve para editar la informacion de un usuario, tiene el mismo funcionamiento que el de editar pokemon solo cambia los nombres.
+
+```javascript
+import { NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-editar-usuario', // Selector para usar este componente en una plantilla HTML
+  standalone: true, // Indica que el componente es independiente
+  imports: [NgIf, NgFor, FormsModule], // Módulos importados necesarios para el funcionamiento del componente
+  templateUrl: './editar-usuario.component.html', // Ruta al archivo HTML asociado al componente
+  styleUrls: ['./editar-usuario.component.css'], // Ruta al archivo CSS asociado al componente
+})
+export class EditarUsuarioComponent implements OnChanges {
+  // Variables para almacenar mensajes de error y éxito
+  errorMessage: string = '';
+  successMessage: string = '';
+
+  @Input() data: any = {}; // Entrada de datos para el usuario a editar
+  @Input() isOpen = false; // Indica si el modal está abierto
+  @Output() close = new EventEmitter<void>(); // Evento para cerrar el modal
+  @Output() confirmar = new EventEmitter<any>(); // Evento para confirmar cambios
+
+  user: any = {}; // Almacena la copia editable de los datos del usuario
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Se ejecuta cuando cambian las propiedades @Input del componente
+    this.errorMessage = ''; // Reinicia el mensaje de error
+    this.successMessage = ''; // Reinicia el mensaje de éxito
+    if (changes['data'] && changes['data'].currentValue) {
+      // Si hay un cambio en 'data', realiza una clonación profunda
+      this.user = JSON.parse(JSON.stringify(this.data));
+    }
+  }
+
+  closeModal() {
+    // Cierra el modal y emite el evento correspondiente
+    this.close.emit();
+  }
+
+  register() {
+    // Expresiones regulares para validar los campos
+    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,}$/; // Valida nombres con al menos 3 letras
+    const phoneRegex = /^\d{10}$/; // Valida números de teléfono con 10 dígitos
+    const urlRegex = /^(https?:\/\/)?([\w\-])+(\.[\w\-]+)+[/#?]?.*$/; // Valida URLs básicas
+
+    // Validaciones para cada campo del formulario
+    if (!this.user.name || !nameRegex.test(this.user.name)) {
+      this.errorMessage = 'El nombre es inválido. Debe contener al menos 3 letras.';
+      return;
+    }
+    if (!this.user.apellidoP || !nameRegex.test(this.user.apellidoP)) {
+      this.errorMessage = 'El apellido paterno es inválido.';
+      return;
+    }
+    if (!this.user.apellidoM || !nameRegex.test(this.user.apellidoM)) {
+      this.errorMessage = 'El apellido materno es inválido.';
+      return;
+    }
+    if (!this.user.phone || !phoneRegex.test(this.user.phone)) {
+      this.errorMessage = 'El teléfono debe tener exactamente 10 dígitos.';
+      return;
+    }
+    if (!this.user.avatar || !urlRegex.test(this.user.avatar)) {
+      this.errorMessage = 'La URL del avatar es inválida. Debe ser un enlace válido.';
+      return;
+    }
+
+    // Si todas las validaciones pasan
+    this.errorMessage = ''; // Borra cualquier mensaje de error
+    this.successMessage = ''; // Borra cualquier mensaje de éxito previo
+    this.successMessage = '¡Registro exitoso!'; // Muestra el mensaje de éxito
+    this.confirmar.emit(this.user); // Emite el evento para confirmar cambios
+    setTimeout(() => this.closeModal(), 1000); // Cierra el modal después de 1 segundo
+  }
+}
+
+```
+
+El html esta compuesto por lo siguiente:
+
+```html
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <!-- Modal principal, visible solo cuando 'isOpen' es verdadero -->
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[700px] w-full relative border-4 border-black">
+    <!-- Encabezado del modal -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-white">
+      <h2 class="text-2xl font-bold text-center">Editar Pokémon</h2>
+    </div>
+
+    <!-- Contenido principal del modal -->
+    <div class="bg-gray-100 p-4 rounded-b-lg">
+      <!-- Formulario con la acción al enviar (ngSubmit) -->
+      <form (ngSubmit)="register()">
+        <!-- Contenedor con scroll para formularios extensos -->
+        <div class="max-h-[500px] overflow-y-auto px-4">
+          <!-- Campo para ingresar la URL del avatar -->
+          <div class="mb-6">
+            <label for="avatar" class="block text-gray-700 font-bold">Avatar URL</label>
+            <input id="avatar" type="text" [(ngModel)]="user.avatar" name="avatar"
+              class="w-full p-2 border rounded text-black" />
+            <!-- Vista previa del avatar ingresado -->
+            <div class="flex items-center justify-center mt-2">
+              <img class="w-[120px] h-[120px] border-4 border-black rounded-full shadow" 
+                [src]="user.avatar" alt="Avatar Preview" />
+            </div>
+          </div>
+
+          <!-- Mensajes de error y éxito -->
+          <div *ngIf="errorMessage" class="text-red-500 text-center mb-3">
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="text-green-500 text-center mb-3">
+            {{ successMessage }}
+          </div>
+
+          <!-- Campos del formulario organizados en una cuadrícula -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <!-- Campo: Nombre -->
+            <div class="mb-4">
+              <label for="nombre" class="block text-gray-700 font-bold">Nombre</label>
+              <input id="nombre" type="text" [(ngModel)]="user.name" name="nombre"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+
+            <!-- Campo: Apellido Paterno -->
+            <div class="mb-4">
+              <label for="descripcion" class="block text-gray-700 font-bold">Apellido Paterno</label>
+              <input id="descripcion" [(ngModel)]="user.apellidoP" name="apellidoP"
+                class="w-full p-2 border rounded text-black">
+            </div>
+
+            <!-- Campo: Apellido Materno -->
+            <div>
+              <label for="peso" class="block text-gray-700 font-bold">Apellido Materno</label>
+              <input id="peso" type="text" [(ngModel)]="user.apellidoM" name="apellidoM"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+
+            <!-- Campo: Teléfono -->
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Teléfono</label>
+              <input id="altura" type="text" [(ngModel)]="user.phone" name="phone"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+
+            <!-- Campo: Contraseña -->
+            <div>
+              <label for="altura" class="block text-gray-700 font-bold">Contraseña</label>
+              <input id="altura" type="text" [(ngModel)]="user.password" name="password"
+                class="w-full p-2 border rounded text-black" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="flex justify-end space-x-4">
+          <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Indicadores de estado de Pokédex (decorativos) -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>
+
+```
+
 
 ![{F41AA3DA-860D-4889-808F-EFB6760202AE}](https://github.com/user-attachments/assets/90685dbb-164a-4c10-ab3b-16aaf09d1189)
 
@@ -1252,6 +1531,84 @@ Esta es una ventana modal que sirve para editar la informacion de un usuario, ti
 
 Este es un modal de confirmacion de elminacion de un usuario tiene el mismo funcionamiento que el de eliminar pokemon solo que enfocado a usuarios en este caso.
 
+El typeScript esta compuesto de la siguiente manera:
+
+```javascript
+import { NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-eliminar-usuario', // El selector define cómo se usará el componente en HTML
+  standalone: true, // Indica que este componente es autónomo y no depende de un módulo específico
+  imports: [NgIf], // Importa la directiva NgIf para controlar la visibilidad del componente
+  templateUrl: './eliminar-usuario.component.html', // Ubicación de la plantilla HTML del componente
+  styleUrls: ['./eliminar-usuario.component.css'] // Ubicación de los estilos del componente
+})
+export class EliminarUsuarioComponent {
+  // Recibe datos desde el componente padre
+  @Input() data: any = {};  // La información del usuario a eliminar
+  @Input() isOpen = false; // Controla la visibilidad del modal (por defecto está cerrado)
+  
+  // Eventos emitidos hacia el componente padre
+  @Output() close = new EventEmitter<void>();  // Emitido cuando se cierra el modal sin eliminar
+  @Output() confirmar = new EventEmitter<any>(); // Emitido cuando se confirma la eliminación del usuario
+
+  // Método para cerrar el modal
+  closeModal() {
+    this.close.emit();  // Emite el evento 'close' para cerrar el modal
+  }
+
+  // Método para confirmar la eliminación del Pokémon
+  borrarPokemon() {
+    this.confirmar.emit(this.data);  // Emite el evento 'confirmar' pasando los datos del usuario
+    this.closeModal();  // Cierra el modal después de la confirmación
+  }
+}
+
+```
+
+El Html de esta vetana modal esta compuesto de la siguiente manera:
+```html
+<div *ngIf="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <!-- Modal principal con fondo rojo, centrado en la pantalla y con bordes negros -->
+  <div class="bg-red-700 rounded-lg shadow-lg p-6 max-w-[500px] w-full relative border-4 border-black">
+  
+    <!-- Sección superior: Marco de la pantalla del Pokédex -->
+    <div class="bg-gray-900 rounded-t-lg shadow-inner p-4 text-white">
+      <!-- Título en el modal -->
+      <h2 class="text-2xl font-bold text-center">Eliminar Usuario</h2>
+    </div>
+  
+    <!-- Sección principal: Contenido de confirmación -->
+    <div class="bg-gray-100 p-4 rounded-b-lg text-center">
+      <!-- Mensaje de confirmación, mostrando el nombre del usuario a eliminar -->
+      <p class="text-gray-700 text-lg font-bold mb-6">
+        ¿Estás seguro que deseas eliminar al Usuario 
+        <span class="text-red-500">{{data.name}}</span>?
+      </p>
+  
+      <!-- Botones de acción: Cancelar y Aceptar -->
+      <div class="flex justify-center space-x-4">
+        <!-- Botón para cancelar la eliminación -->
+        <button class="px-4 py-2 bg-gray-600 text-white rounded" (click)="closeModal()">
+          Cancelar
+        </button>
+        <!-- Botón para confirmar la eliminación -->
+        <button class="px-4 py-2 bg-blue-500 text-white rounded" (click)="borrarPokemon()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  
+    <!-- Botones del Pokédex (solo decoración visual) -->
+    <div class="absolute top-2 right-2 flex space-x-2">
+      <div class="w-4 h-4 bg-blue-500 rounded-full shadow"></div>
+      <div class="w-4 h-4 bg-green-500 rounded-full shadow"></div>
+    </div>
+  </div>
+</div>
+
+```
 
 ![{A71BA5E1-7683-4CF2-A94D-480841A6C312}](https://github.com/user-attachments/assets/67fa3b88-fc12-485c-b9cc-b5dd8ff9397e)
 
@@ -1414,7 +1771,8 @@ export default class LoginComponent {
 </div>
 ```
 
-![Uploading {9AE43835-D3DF-4ACB-BD5B-DE34D64C26DD}.png…]()
+![imagen](https://github.com/user-attachments/assets/9e6aea91-ae31-4a01-bc29-e370ccc7b713)
+
 
 ## Elaboración del Register
 
